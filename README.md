@@ -154,7 +154,7 @@ new InjectProjectInfoWebpackPlugin({
 }),
 ```
 
-<img src="./assets/inject-show.jpg" style="width: 400px; display: block;">
+<img src="./assets/inject-show.jpeg" style="width: 400px; display: block;">
 
 ## Todos
 

@@ -42,9 +42,6 @@
     "tool pulgin"
   ],
   "license": "MIT",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "files": [
     "lib",
     "assets",
