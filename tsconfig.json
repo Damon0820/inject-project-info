@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "declarationDir": "lib",
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "preserve",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2015",
+      "ES2016",
+      "ES2017",
+      "ES2018",
+      "ES2019",
+      "ES2020",
+      "ES2021",
+      "ESNext"
+    ],
+    "module": "ES6",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "paths": {
+      "#/*": ["*"],
+      "@/*": ["src/*"]
+    },
+    "strict": true,
+    "target": "ES5",
+    "typeRoots": ["node_modules/@types", "typings"]
+  },
+  "exclude": [
+    "lib",
+    "node_modules",
+    "rollup.config.js",
+    "example-vite",
+    "example-vue-cli4",
+    "example-webpack"
+  ]
+}

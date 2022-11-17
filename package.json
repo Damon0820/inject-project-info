@@ -1,0 +1,86 @@
+{
+  "name": "inject-project-info",
+  "version": "0.1.0",
+  "description": "一个工具类插件。别提供了webpack 插件版本和vite 插件版本。打包项目时注入git仓库信息和打包时间等，可在控制台日志查看，方便定位版本问题。",
+  "main": "lib/index.min.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "npx only-allow pnpm",
+    "build": "rollup -c rollup.config.js"
+  },
+  "dependencies": {
+    "git-repo-info": "^2.1.1",
+    "webpack-sources": "^3.2.3"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^9.0.1",
+    "@types/webpack": "^5.28.0",
+    "rollup": "^2.79.1",
+    "rollup-plugin-cleandir": "^2.0.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.4.0",
+    "typescript": "^4.8.4",
+    "vite": "^3.2.0",
+    "webpack": "^5.74.0",
+    "rollup-plugin-dts": "^4.2.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Damon0820/inject-project-info.git"
+  },
+  "author": "Damon0820 <245211612@qq.com>",
+  "keywords": [
+    "inject-project-info",
+    "vite",
+    "vite plugin",
+    "webpack",
+    "webpack plugin",
+    "plugin",
+    "tool pulgin"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.js"
+    },
+    "./*": "./*",
+    "./webpack": {
+      "types": "./lib/webpack/index.d.ts",
+      "require": "./lib/webpack.cjs",
+      "import": "./lib/webpack.js"
+    },
+    "./vite": {
+      "types": "./lib/vite/index.d.ts",
+      "require": "./lib/vite.cjs",
+      "import": "./lib/vite.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./lib/*"
+      ],
+      "vite": [
+        "./lib/vite/index.d.ts"
+      ],
+      "webpack": [
+        "./lib/webpack/index.d.ts"
+      ]
+    }
+  }
+}

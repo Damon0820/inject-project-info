@@ -1,0 +1,4 @@
+packages:
+  - "example-vite"
+  - "example-vue-cli4"
+  - "example-webpack"
