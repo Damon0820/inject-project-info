@@ -1,9 +1,10 @@
-# 分享
+# 基于 rollup + typescript + pnpm + monorepo 搭建插件工具库的一次实战
 
-> 本次分享以 inject-project-info 插件为例，讲述基于 rollup + typescript + pnpm + monorepo 搭建插件工具库的一次实战
+> 本文以 inject-project-info 插件为例，讲述基于 rollup + typescript + pnpm + monorepo 搭建插件工具库的一次实战
 
-首先先介绍一些 inject-project-info 插件的使用场景、使用方式、效果展示。
-然后已 inject-project-info 项目代码为例，介绍一下代码组织结构。再依次介绍项目中使用的到技术点：rollup + typescript + pnpm + monorepo。
+1. 首先先介绍一些 inject-project-info 插件的使用场景、使用方式、效果展示。
+2. 然后以 inject-project-info 项目代码为例，介绍一下代码组织结构。
+3. 再依次介绍项目中使用的到技术点：rollup + typescript + pnpm + monorepo。
 
 ## inject-project-info 插件
 
@@ -147,7 +148,7 @@ export default {
 };
 ```
 
-执行 npm run build 生成 dist/index.bundle.js 文件。经过摇树优化后，生成内容为：
+执行 `npm run build` 生成 dist/index.bundle.js 文件。经过摇树优化后，生成内容为：
 
 ```js
 function helloA() {
@@ -170,13 +171,13 @@ helloA();
 - `external` npm 模块清单。
 - `plugins` 插件，常用的有 cleandir，typescript，nodeResolve，commonjs，terser 等。
 
-1. inject-project-info 项目中要同时输出 webpack 插件和 vite 插件，每个插件又有 es 模块版本和 cjs 模块版本。所以需要配置多套 input 和 output 方案。配置文件 rollup.config.js 接受导出一个数组的形式让我们可以配置多套配置。
+1. inject-project-info 项目中要同时输出 webpack 插件和 vite 插件，每个插件又有 es 模块版本和 cjs 模块版本。所以需要配置多套 input 和 output 方案。配置文件 rollup.config.js 接受导出一个**数组**的形式让我们可以配置多套配置。
 2. rollup 由于本身功能很简单，所以依赖插件去实现其他功能。项目用到 ts，所以要使用`@rollup/plugin-typescript`插件编译 ts 文件，并将 ts 配置文件`tsconfig`的输出目标语言设置为 es5。打包后输出.d.ts 声明文件和 es5 语言的 js 文件。
-3. 在默认情况下，rollup 只会解析相对模块 ID，意味着导入语句 import Xyz from "xyz"不会让 Npm 模块应用到 bundle 文件中。若要让 Npm 模块应用到 bundle 文件中，需告知 rollup 如何找到它。安装@rollup/plugin-node-resolve，使用该插件自动寻找引用到的 Npm 模块。
-   在配置了@rollup/plugin-node-resolve 插件后，默认会将所有 npm 模块的代码打包到 bundle 文件。如果一些 npm 模块不想打包进 bundle，需要在`extenal`字段中配置声明为外部模块。
-4. 由于 Rollup 使用的是 es 的模块标准。有些 Npm 模块在引用时导入的 bundle 文件的模块规范可能是 CJS，例如 jquery、day 等，而 rollup 在普通情况下无法解析 CJS。安装@rollup/plugin-commonjs，使用该插件将 CJS 转换为 ESM 再让其参与到后续编译中。
-5. 每次打包之前，要先清空上一次打包的产物。安装 rollup-plugin-cleandir，仅在数组配置项的第一个中配置此插件。则会在打包开始前，清理 lib 文件夹。
-6. 如果是 bundle 代码被使用环境是项目的生产依赖，可以优化压缩 bundle 文件的体积，安装 rollup-plugin-terser，启动代码压缩。
+3. 在默认情况下，rollup 只会解析相对模块 ID，意味着导入语句 `import Xyz from "xyz"`不会让 Npm 模块应用到 bundle 文件中。若要让 Npm 模块应用到 bundle 文件中，需告知 rollup 如何找到它。安装`@rollup/plugin-node-resolve`，使用该插件自动寻找引用到的 Npm 模块。
+   在配置了插件后，默认会将所有 npm 模块的代码打包到 bundle 文件。如果一些 npm 模块不想打包进 bundle，需要在`extenal`字段中配置声明为外部模块。
+4. 由于 Rollup 使用的是 es 的模块标准。有些 Npm 模块在引用时导入的 bundle 文件的模块规范可能是 CJS，例如 jquery、day 等，而 rollup 在普通情况下无法解析 CJS。安装`@rollup/plugin-commonjs`，使用该插件将 CJS 转换为 ESM 再让其参与到后续编译中。
+5. 每次打包之前，要先清空上一次打包的产物。安装 `rollup-plugin-cleandir`，仅在数组配置项的第一个中配置此插件。则会在打包开始前，清理 lib 文件夹。
+6. 如果是 bundle 代码被使用环境是项目的生产依赖，可以优化压缩 bundle 文件的体积，安装 `rollup-plugin-terser`，启动代码压缩。
 
 inject-project-info 项目的[rollup 配置文件](https://github.com/Damon0820/inject-project-info)示例：
 
@@ -197,27 +198,6 @@ const pluginsHasTerser = [
 ];
 
 module.exports = [
-  // 导出一些方法
-  {
-    input: './src/index.ts',
-    output: {
-      file: './lib/index.js',
-      format: 'es',
-    },
-    plugins: [...pluginsHasTerser, cleandir('lib')],
-    external: ['git-repo-info', 'child_process'],
-  },
-  {
-    input: './src/index.ts',
-    output: {
-      file: './lib/index.cjs',
-      format: 'cjs',
-      exports: 'auto',
-    },
-    plugins: pluginsHasTerser,
-    external: ['git-repo-info', 'child_process'],
-  },
-
   // webpack插件
   {
     input: './src/webpack/index.ts',
@@ -347,7 +327,7 @@ packages:
   - 'example-webpack'
 ```
 
-3. 子模块间相互引用，使用 workspace:协议安装依赖。这里在 example-vite，example-vue-cli4，example-webpack 模块使用 workspace:协议安装 inject-project-info 插件，则每个子模块下实际引用的 inject-project-info 会通过软链接到本地工作区的 inject-project-info 模块，而不会下载远程 npm 包。实现源码级别的调试。
+3. 子模块间相互引用，使用 `workspace:`协议安装依赖。这里在 example-vite，example-vue-cli4，example-webpack 模块使用 安装 inject-project-info 插件，自动会使用`workspace:协议`安装。则每个子模块下实际引用的 inject-project-info 会通过软链接到本地工作区的 inject-project-info 模块，而不会下载远程 npm 包。实现源码级别的调试。
    `pnpm install inject-project-info/webpack -rD`
    -r 代表所有子模块都会安装
    -D 代表安装到开发依赖下
@@ -359,7 +339,7 @@ packages:
   },
 ```
 
-可以将版本号 workspace:^1.0.14 改成 workspace:\*，这样就可以保持依赖的版本是工作空间里最新版本，不需要每次手动更新依赖版本。
+可以将版本号 `workspace:^1.0.14` 改成 `workspace:\*`，这样就可以保持在 example-vite，example-vue-cli4，example-webpack 示例项目中做测试的时候，依赖的版本是工作空间里最新版本。避免了繁琐的调试流程：inject-project-info 插件源码修改 -> 构建插件 bundle 产物 -> 升级版本号发布到 npm -> 每个 example-x 示例项目更新插件最新版本。有些同学可能会有疑问，在 example-x 示例项目直接使用相对路径引用 inject-project-info/lib 下的文件效果不是一样吗？答案是不完全一样。首先 node 解析依赖的机制就不一样。还可能出现模块标准解析上的区别。为了模拟真实用户使用场景，使用模块名的方式引入是更好的。
 当 pnpm publish 的时候，会自动将 package.json 中的 workspace:xx 修正为对应的版本号。
 使用 pnpm + monorepo 管理项目还有许多其他功能特性，有兴趣的同学可以详细研究。或许某些业务代码仓库也适用此方式去管理的。
 
