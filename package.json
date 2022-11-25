@@ -1,6 +1,6 @@
 {
   "name": "inject-project-info",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "一个工具类插件。别提供了webpack 插件版本和vite 插件版本。打包项目时注入git仓库信息和打包时间等，可在控制台日志查看，方便定位版本问题。",
   "main": "lib/index.min.js",
   "type": "module",
